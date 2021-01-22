@@ -5,12 +5,20 @@ module EVENTS
       parsed_emails = []
       parsed_phones = []
   
-      emails.each do |email|
-        parsed_emails.push("value": email)
+      if emails.kind_of? String
+        parsed_emails.push("value": emails)
+      elsif emails.kind_of? Array
+        emails.each do |email|
+          parsed_emails.push("value": email)
+        end
       end
-  
-      phones.each do |phone|
-        parsed_phones.push("value": phone)
+
+      if phones.kind_of? String
+        parsed_phones.push("value": phones)
+      elsif phones.kind_of? Array
+        phones.each do |phone|
+          parsed_phones.push("value": phone)
+        end
       end
   
       person = {
