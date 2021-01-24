@@ -1,5 +1,5 @@
 require 'httparty'
-require './events.rb'
+require 'events'
 
 module CALLS
   INTERESTED='Interested'
@@ -17,14 +17,16 @@ class FUB
   # Base URI or all HTTP calls
   base_uri 'https://api.followupboss.com/v1/'
 
-  # FUB uses basic auth
-  @auth = { username: '', password: ''}
+  @x_sys = {'X-System': '', 'X-System-Key': ''}
 
   # FUB.new
   # Grab the api_key from the Rails credientials store
-  def initialize(api_key)
+  def initialize(api_key, x_system, x_system_key)
     #api_key = Rails.application.credentials.fub[:api_key]
-    @auth = {username: api_key, password: ''}  
+    
+    # Set basic auth credentials
+    self.class.basic_auth(api_key, '')
+    self.class.headers({'X-System': x_system, 'X-System-Key': x_system_key}) 
   end
 
   # Get all PEOPLE from FUB
@@ -153,9 +155,6 @@ class FUB
       # Set up the query offset and limit options
       options = { query: {offset: offset, limit: limit}}
 
-      # Merge in the basic auth info
-      options.merge!({basic_auth: @auth})
-
       # Merge in the query options if any
       if query && query.length > 0
         options[:query].merge!(query)
@@ -180,8 +179,8 @@ class FUB
 
     def api_post_wrapper(data, api_endpoint)
 
-      # Set up the query offset and limit options
-      options = {basic_auth: @auth}
+      # Set up the options
+      options = {}
 
       # Merge in the data if any
       if data && data.length > 0
