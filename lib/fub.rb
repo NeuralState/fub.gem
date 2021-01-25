@@ -10,6 +10,9 @@ module FUB
     BAD_NUMBER='Bad Number'
   end
 
+  class << self
+    attr_accessor :api_key, :x_system, :x_system_key
+  end
 
   class FUBClient
     include HTTParty
@@ -18,16 +21,24 @@ module FUB
     # Base URI or all HTTP calls
     base_uri 'https://api.followupboss.com/v1/'
 
-    @x_sys = {'X-System': '', 'X-System-Key': ''}
-
     # FUBClient.new
     # Grab the api_key from the Rails credientials store
-    def initialize(api_key, x_system, x_system_key)
-      #api_key = Rails.application.credentials.fub[:api_key]
-      
+    def initialize()
+      if (!FUB.api_key)
+        raise 'Followup Boss API Key not set.  Please set using FUB.api_key='
+      end
+
+      if (!FUB.x_system)
+        raise 'Followup Boss X-System id not set.  Please set using FUB.x_system='
+      end
+
+      if (!FUB.x_system_key)
+        raise 'Followup Boss X-System-Key not set.  Please set using FUB.x_system_key='
+      end
+
       # Set basic auth credentials
-      self.class.basic_auth(api_key, '')
-      self.class.headers({'X-System': x_system, 'X-System-Key': x_system_key}) 
+      self.class.basic_auth(FUB.api_key, '')
+      self.class.headers({'X-System': FUB.x_system, 'X-System-Key': FUB.x_system_key}) 
     end
 
     # Get all PEOPLE from FUB
