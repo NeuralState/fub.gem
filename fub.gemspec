@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name	= 'fub'
-  s.version	= '0.0.1'
-  s.date	= '2020-11-18'
+  s.version	= '0.0.2'
+  s.date	= '2021-01-25'
   s.summary	= "Followup Boss API library"
   s.description	= "Library to communicate with Followup Boss"
   s.authors	= ["Bill Nelson"]
