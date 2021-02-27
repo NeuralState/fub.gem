@@ -159,6 +159,29 @@ module FUB
       return api_get_wrapper(nextGroup, query, limit, 'tasks')
     end
     
+    # Posts a text message to a PersonID
+    def log_text_message(personId, message, toNumber, fromNumber, isIncoming)
+      options = {
+        :headers => {
+          'Content-Type' => 'application/x-www-form-urlencoded'
+        }
+      }
+
+      body = {
+        'personId' => personId,
+        'message' => message,
+        'toNumber' => toNumber,
+        'fromNumber' => fromNumber,
+        'isIncoming' => isIncoming,
+        'externalLabel' => 'Sign Call'
+      }
+
+      return api_post_wrapper(body, 'textMessages', options)
+    end
+
+    def get_text_messages(personId)
+      api_get_wrapper({personId: personId}, 0, 100, 'textMessages')
+    end
     
     private
       # Private wrapper function to wrap DRY logic
@@ -189,10 +212,7 @@ module FUB
         return nil
       end
 
-      def api_post_wrapper(data, api_endpoint)
-
-        # Set up the options
-        options = {}
+      def api_post_wrapper(data, api_endpoint, options = {})
 
         # Merge in the data if any
         if data && data.length > 0
